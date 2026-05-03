@@ -6,21 +6,21 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
   sha256: 4dce282543039681160259d29fcde6151cc9106c6461e0485f57cdccd83059b7
 
 build:
-  number: 1
+  number: 0
+  skip: true  # [py<310]
   script:
-    # HNSWLIB_NO_NATIVE is set to build without "--march=native"
-    - export HNSWLIB_NO_NATIVE=1 && {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv  # [unix]
-    - set HNSWLIB_NO_NATIVE=1 && {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv  # [win]
+    # HNSWLIB_NO_NATIVE disables -march=native for portable conda builds
+    - export HNSWLIB_NO_NATIVE=1 && {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation  # [unix]
+    - set HNSWLIB_NO_NATIVE=1 && {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation  # [win]
 
 requirements:
-  # see https://github.com/conda-forge/hnswlib-feedstock/blob/main/recipe/meta.yaml
   build:
     - {{ compiler('cxx') }}
-    - {{ stdlib("c") }}
+    - {{ stdlib('c') }}
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - python                                 # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
@@ -28,6 +28,7 @@ requirements:
     - python
     - pip
     - setuptools >=42
+    - wheel
     - pybind11 >=2.0
     - numpy
   run:
@@ -36,15 +37,16 @@ requirements:
 test:
   imports:
     - hnswlib
-  commands:
-    - pip check
   requires:
     - pip
+  commands:
+    - pip check
 
 about:
   home: https://github.com/chroma-core/hnswlib
   summary: Chromas fork of hnswlib
   license: Apache-2.0
+  license_family: APACHE
   license_file: LICENSE
 
 extra:
