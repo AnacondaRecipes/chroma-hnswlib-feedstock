@@ -45,10 +45,16 @@ test:
 
 about:
   home: https://github.com/chroma-core/hnswlib
-  summary: Chromas fork of hnswlib
+  summary: Chroma's fork of hnswlib
+  description: |
+    Chroma's fork of hnswlib - a header-only C++/Python library for fast
+    approximate nearest-neighbor search. Used as the default in-memory
+    vector index by chromadb.
   license: Apache-2.0
   license_family: APACHE
   license_file: LICENSE
+  doc_url: https://github.com/chroma-core/hnswlib
+  dev_url: https://github.com/chroma-core/hnswlib
 
 extra:
   recipe-maintainers:
